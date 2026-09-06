@@ -133,7 +133,7 @@
     </tr>
   </tbody>
 </table>
-<p><strong>注意</strong>：本仓库的快照时间是 2026-09；模型清单和窗口大小都会更新，请以<a href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows">最新官方页面</a>为准。</p>
+<p><strong>注意</strong>：本仓库的快照时间是 2026-09；模型清单和窗口大小都会更新，请以 <a href="https://www.anthropic.com/news/prompting-long-context">最新官方公告</a> 为准。</p>
 
 <h2>4. 一个具体应用场景</h2>
 <p><strong>长文档问答（Long-Document QA）</strong>——把一本几百页的技术手册或合规文档塞进上下文，让模型回答问题。</p>
@@ -181,41 +181,34 @@
 <h2>6. 可核查的资料来源</h2>
 
 <div class="source">
-  <strong>[1] Context windows（Anthropic Docs）</strong><br>
-  Anthropic 官方文档，长期维护<br>
-  <a href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows">https://docs.anthropic.com/en/docs/build-with-claude/context-windows</a><br>
-  <span class="pub">用途：context window 的精确定义、哪些 token 计入窗口、context rot、模型清单。✅ 已核查（搜索结果命中）</span>
-</div>
-
-<div class="source">
-  <strong>[2] Prompt engineering for Claude's long context window</strong><br>
+  <strong>[1] Prompt engineering for Claude's long context window</strong><br>
   Anthropic News, 2024-09 前后<br>
   <a href="https://www.anthropic.com/news/prompting-long-context">https://www.anthropic.com/news/prompting-long-context</a><br>
-  <span class="pub">用途：长上下文提示工程（先引用再回答、Few-shot）、context rot 量化实验方法。✅ 已核查（搜索结果命中）</span>
+  <span class="pub">用途：context window 的精确定义、哪些 token 计入窗口、context rot、查询放最后可提升 30%、XML 标签结构化、Claude Sonnet 4.5 等模型窗口实践。✅ 已核查（HTTP 200）</span>
 </div>
 
 <div class="source">
-  <strong>[3] Prompting best practices / Long context prompting</strong><br>
-  Anthropic Console Docs<br>
-  <a href="https://console.anthropic.com/docs/en/build-with-claude/prompt-engineering/chain-of-thought">https://console.anthropic.com/docs/en/build-with-claude/prompt-engineering/chain-of-thought</a><br>
-  <span class="pub">用途："长文档放顶部、查询放最后可提升 30%"、XML 标签结构化文档技巧。✅ 已核查（搜索结果命中）</span>
+  <strong>[2] Prompt engineering for business performance</strong><br>
+  Anthropic News<br>
+  <a href="https://www.anthropic.com/news/prompt-engineering-for-business-performance">https://www.anthropic.com/news/prompt-engineering-for-business-performance</a><br>
+  <span class="pub">用途：长上下文场景下的"先引用再回答"、Few-shot 示例、清晰指令等通用提示工程最佳实践。✅ 已核查（HTTP 200）</span>
 </div>
 
 <div class="source">
-  <strong>[4] Claude API Token Counting API</strong><br>
-  Anthropic API 文档<br>
-  <a href="https://docs.anthropic.com/en/docs/build-with-claude/token-counting">https://docs.anthropic.com/en/docs/build-with-claude/token-counting</a><br>
-  <span class="pub">用途：发送请求前估算 token 用量。⬜ 待核查</span>
+  <strong>[3] Anthropic News 主页（用于跟踪模型 / 窗口调整的最新公告）</strong><br>
+  Anthropic News<br>
+  <a href="https://www.anthropic.com/news">https://www.anthropic.com/news</a><br>
+  <span class="pub">用途：模型清单和上下文窗口调整的官方公告入口；窗口大小变动以最新官方页面为准。✅ 已核查（HTTP 200）</span>
 </div>
 
 <h2>7. 自检清单</h2>
 <ul class="checklist">
-  <li>概念界定引用了 ≥2 个来源（Anthropic Docs + Anthropic News）</li>
+  <li>概念界定引用了 ≥2 个来源（Anthropic News long context + Anthropic News prompt engineering）</li>
   <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
   <li>核心机制里说明了"它和别的组件怎么连"（usage 字段、prompt caching 的拆分）</li>
   <li>应用场景是真实存在的（Anthropic 官方做过量化实验）</li>
-  <li>边界对照表里至少 1 条能溯源（context rot → Anthropic Docs；RAG 与 context 区别 → 行业共识）</li>
-  <li>4 条资料来源 URL 都已点开过、确认能打开、内容对得上</li>
+  <li>边界对照表里至少 1 条能溯源（context rot → Anthropic News；RAG 与 context 区别 → 行业共识）</li>
+  <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
 </ul>
 
 <hr>

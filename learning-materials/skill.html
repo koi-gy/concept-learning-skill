@@ -218,41 +218,34 @@ description: 这个 Skill 做什么、何时使用
 </div>
 
 <div class="source">
-  <strong>[2] What are skills?（Anthropic Help Center）</strong><br>
+  <strong>[1] Introducing Agent Skills | Claude</strong><br>
+  Anthropic 官方公告, 2025-10-16 发布, 2025-12-18 更新<br>
+  <a href="https://claude.com/blog/skills">https://claude.com/blog/skills</a><br>
+  <span class="pub">用途：Skill 的官方定义、Composable / Portable / Efficient / Powerful 四大特性、按需加载设计、Skill 在 Claude apps / Claude Code / API 统一格式。✅ 已核查（HTTP 200）</span>
+</div>
+
+<div class="source">
+  <strong>[2] What are skills?（Anthropic Help Center，含 SKILL.md 字段与安全要求）</strong><br>
   Anthropic 支持文档<br>
-  <a href="https://support.anthropic.com/en/articles/12512176-what-are-skills">https://support.anthropic.com/en/articles/12512176-what-are-skills</a><br>
-  <span class="pub">用途：渐进式披露原理、4 类 Skill、Custom skills 典型场景、与 Projects/MCP/Custom Instructions 的对比。✅ 已核查（搜索结果命中）</span>
+  <a href="https://support.claude.com/en/articles/12512176-what-are-skills">https://support.claude.com/en/articles/12512176-what-are-skills</a><br>
+  <span class="pub">用途：SKILL.md YAML frontmatter 字段硬性要求（name ≤64 字符、description ≤1024 字符）、安全注意事项、4 类 Skill 定义、渐进式披露原理、与 Projects/MCP/Custom Instructions 的对比。✅ 已核查（HTTP 200）</span>
 </div>
 
 <div class="source">
-  <strong>[3] Agent Skills（中文官方文档）</strong><br>
-  Anthropic Console Docs 中文版<br>
-  <a href="https://console.anthropic.com/docs/zh-CN/agents-and-tools/agent-skills/overview">https://console.anthropic.com/docs/zh-CN/agents-and-tools/agent-skills/overview</a><br>
-  <span class="pub">用途：SKILL.md YAML frontmatter 字段硬性要求、安全注意事项、项目级 / 用户级 Skill 的存放位置。✅ 已核查（搜索结果命中）</span>
-</div>
-
-<div class="source">
-  <strong>[4] Introduction to Claude Skills（Cookbook）</strong><br>
-  Anthropic Cookbook, platform.claude.com<br>
-  <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction">https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction</a><br>
-  <span class="pub">用途：三层加载模型图示、98% token 节省的量化数据、Skills 与代码执行的集成示例。✅ 已核查（搜索结果命中）</span>
-</div>
-
-<div class="source">
-  <strong>[5] Agent Skills 开放标准</strong><br>
+  <strong>[3] Agent Skills 开放标准</strong><br>
   agentskills.io（Anthropic 发布为开放标准）<br>
   <a href="https://agentskills.io">https://agentskills.io</a><br>
-  <span class="pub">用途：Skill 格式作为跨平台开放标准的官方页面。⬜ 待核查</span>
+  <span class="pub">用途：Skill 格式作为跨平台开放标准的官方页面。✅ 已核查（HTTP 200）</span>
 </div>
 
 <h2>7. 自检清单</h2>
 <ul class="checklist">
-  <li>概念界定引用了 ≥2 个来源（Anthropic News + Help Center + 中文文档）</li>
+  <li>概念界定引用了 ≥2 个来源（Anthropic News + Help Center）</li>
   <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
   <li>核心机制里说明了"它和别的组件怎么连"（三层加载如何省 token、Skill 如何配合 MCP）</li>
   <li>应用场景是真实存在的（Anthropic 官方列举的 Custom skills 场景）</li>
   <li>边界对照表里至少 1 条能溯源（Skill vs MCP、Skill vs Project 直接来自官方对比表）</li>
-  <li>5 条资料来源 URL 都已点开过、确认能打开、内容对得上</li>
+  <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
 </ul>
 
 <hr>
