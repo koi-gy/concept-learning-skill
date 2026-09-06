@@ -1,0 +1,56 @@
+# 敏感文件 / 环境配置
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+config/local.*
+credentials.json
+
+# 本地依赖
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志 / 临时
+*.log
+logs/
+tmp/
+temp/
+outputs/
+
+# WorkBuddy 本地数据（只提交 skills/）
+.workbuddy/memory/
+.workbuddy/cache/
+.workbuddy/*.db
+.workbuddy/*.sqlite
+
+# 构建产物
+dist/
+build/
+*.min.js
+*.min.css
+
+# 大文件
+*.zip
+*.tar.gz
+*.7z
+*.iso

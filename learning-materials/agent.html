@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料：Agent · concept-learner</title>
+<style>
+  :root {
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --warn: #b45309;
+    --warn-soft: #fef3c7;
+    --ok: #166534;
+    --ok-soft: #dcfce7;
+    --ink: #1f2937;
+    --ink-soft: #4b5563;
+    --line: #e5e7eb;
+    --bg: #fafafa;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: var(--ink); background: #fff; line-height: 1.7; max-width: 880px; margin: 32px auto; padding: 0 24px; }
+  h1 { font-size: 2rem; margin-bottom: 4px; }
+  h2 { font-size: 1.4rem; margin-top: 36px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1rem; margin-top: 24px; color: var(--accent); }
+  .meta { color: var(--ink-soft); font-size: 0.92rem; padding: 12px 16px; background: var(--bg); border-left: 4px solid var(--accent); border-radius: 4px; margin: 16px 0 28px; }
+  .meta span { display: inline-block; margin-right: 18px; }
+  .meta strong { color: var(--ink); }
+  .tldr { background: var(--accent-soft); padding: 16px 20px; border-radius: 8px; }
+  .tldr ul { margin: 8px 0 0; padding-left: 20px; }
+  .tldr li { margin-bottom: 4px; }
+  .personal { background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 16px 20px; border-radius: 4px; }
+  .personal::before { content: "⚠️ 待人工改写"; display: inline-block; font-weight: 600; color: var(--warn); margin-bottom: 8px; font-size: 0.88rem; }
+  .personal p { margin: 8px 0; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  pre { background: #1f2937; color: #e5e7eb; padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: var(--bg); font-weight: 600; }
+  ol, ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 6px 0 6px 28px; position: relative; }
+  .checklist li::before { content: "☐"; position: absolute; left: 4px; color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+  .checklist li.done { color: var(--ink-soft); text-decoration: line-through; }
+  .checklist li.done::before { content: "☑"; color: var(--ok); }
+  .source { font-size: 0.92rem; padding: 10px 14px; background: var(--bg); border-radius: 4px; margin: 10px 0; }
+  .source a { color: var(--accent); word-break: break-all; }
+  .source .pub { color: var(--ink-soft); font-size: 0.85rem; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+  footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<h1>概念学习资料：Agent</h1>
+
+<div class="meta">
+  <span><strong>生成时间</strong> 2026-09-06</span>
+  <span><strong>来源门槛</strong> 官方文档级</span>
+  <span><strong>最后核查</strong> ⬜ 未核查</span>
+  <span><strong>状态</strong> AI 草稿 · 待人工核查与改写</span>
+</div>
+
+<section class="tldr">
+  <strong>TL;DR — 30 秒版</strong>
+  <ul>
+    <li>Agent（智能体）= LLM 自己决定"下一步做什么"，而不是被写死的流程牵着走。</li>
+    <li>Anthropic 把"工作流（workflow）"和"Agent"做了关键区分：前者是预定义代码路径，后者是 LLM 动态指导自己。</li>
+    <li>OpenAI 把 Agent 拆成三个核心组件：<strong>模型 + 工具 + 指令</strong>。</li>
+    <li>Agent 不是 ChatGPT——ChatGPT 是被动应答，Agent 能调用工具、自主规划、循环执行直到完成。</li>
+    <li>不是所有问题都该用 Agent：能用规则解决的就别上 Agent，因为 Agent 用更高的延迟和成本换灵活性。</li>
+  </ul>
+</section>
+
+<h2>1. 这是什么</h2>
+<p>"Agent"在 2024–2026 年的 AI 行业里被反复定义，不同来源各有侧重：</p>
+<ul>
+  <li><strong>Anthropic（2024-12 发布，2025 持续更新）</strong>：Agent 是"LLM 动态指导自己的处理流程和工具使用，维持对如何完成任务的控制"的系统。这与"工作流"（LLM 和工具被预定义代码路径编排）形成对照。两者合称"agentic systems"。</li>
+  <li><strong>OpenAI（2025-04 发布 A Practical Guide）</strong>：Agent 是"能代表用户独立完成任务的系统"，它用 LLM 管理工作流执行与决策，识别何时完成、主动纠错、失败时停止并交还控制权；并且能动态选择工具、在明确护栏（guardrails）内运行。</li>
+</ul>
+<p><strong>冲突点</strong>：OpenAI 的定义偏向"独立完成任务"，强调自主性；Anthropic 的定义偏向"动态控制流程"，强调与"工作流"的边界。两者在本质上是一致的——都强调 LLM 是决策中心、而不是被编排的零件。</p>
+
+<h2>2. 我的理解</h2>
+<div class="personal">
+<p><strong>这一段是 AI 草稿，必须由你用自己的话改写。</strong>下面给一个起点，你可以重写、删改或加例：</p>
+<p>如果让我给一个完全没听过 Agent 的同学讲，我会这么说——</p>
+<p>"以前用 ChatGPT，你问一句它答一句，就像一个博学的客服：你不问，它不会主动做任何事。Agent 不一样：你给它一个目标（比如'帮我订一下下周五去上海的机票和酒店'），它会自己拆解任务——先查航班、再筛价格、再调酒店 API、再问你偏好、再下单——这个过程不是人写的流程，是它自己决定的。它还会在中途出错时自己回头改，做完了告诉你结果。"</p>
+<p>换句话说，<strong>Agent 的核心不是'更聪明的 LLM'，而是'LLM + 自主决策循环'</strong>。没有这个循环，再大的模型也只是个聊天框。</p>
+</div>
+
+<h2>3. 核心机制 / 组成</h2>
+<p>Anthropic 把 agentic systems 拆成一个由简到繁的阶梯。最底层是"增强型 LLM"（augmented LLM），上面叠工作流，再上面才是 Agent。</p>
+
+<table>
+  <thead>
+    <tr><th>层级</th><th>含义</th><th>谁在控制</th><th>典型例子</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>增强型 LLM</strong></td>
+      <td>给 LLM 加上检索、工具、记忆</td>
+      <td>LLM 主动使用能力</td>
+      <td>能上网、能查日历的 ChatGPT</td>
+    </tr>
+    <tr>
+      <td><strong>工作流 Workflow</strong></td>
+      <td>预定义代码路径编排 LLM 和工具</td>
+      <td>代码</td>
+      <td>Prompt Chaining（先写大纲再写正文）、Routing（按问题类型走不同分支）</td>
+    </tr>
+    <tr>
+      <td><strong>Agent</strong></td>
+      <td>LLM 动态决定下一步</td>
+      <td>LLM</td>
+      <td>Claude Code、OpenAI Operator、Coinbase 的客服 Agent</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>OpenAI 把 Agent 拆成三个核心组件（更"原子"的视角）：</p>
+<ol>
+  <li><strong>模型（Model）</strong>——做推理和决策的 LLM。越复杂的步骤越需要更强的模型；简单的检索/分类可以用小模型省钱。</li>
+  <li><strong>工具（Tools）</strong>——Agent 与外部世界交互的接口。三类：数据类（查 DB、读 PDF、搜网页）、行动类（写记录、发消息）、编排类（Agent 调用其他 Agent）。</li>
+  <li><strong>指令（Instructions）</strong>——定义 Agent 怎么行为。最佳实践：用现有文档改写、把任务拆小、明确每个动作、考虑边界情况。</li>
+</ol>
+
+<p><strong>关键连接</strong>：没有"循环退出条件"（loop exit condition），Agent 就不成立。一个常见的实现是 OpenAI Agents SDK 的 <code>Runner.run()</code>——它循环调用 LLM 直到满足下面任一条件：调用了最终输出工具、模型直接回复、或达到最大轮数。</p>
+
+<h2>4. 一个具体应用场景</h2>
+<p><strong>Coinbase 的客服 Agent</strong>（数据来自 Anthropic 的企业白皮书 <em>Building Effective AI Agents</em>）：</p>
+<ul>
+  <li><strong>谁在用</strong>：Coinbase，全球最大的加密货币交易所之一。</li>
+  <li><strong>解决什么问题</strong>：客服消息量大、24/7、涉及资金操作需要高可用。</li>
+  <li><strong>怎么做的</strong>：基于 Claude 构建 agentic 客服系统，能自主处理退款查询、账户问题等。</li>
+  <li><strong>效果</strong>：每小时处理数千条消息，维持 <strong>99.99% 可用性</strong>；平台已衍生出 35–50 个内部 AI 应用。</li>
+</ul>
+<p>为什么这个例子可信：来源是 Anthropic 官方的 PDF 白皮书，不是博客转述；具体数字（99.99%、35–50 个应用）可被 Coinbase 自己的公开材料交叉验证。</p>
+
+<h2>5. 边界 & 容易混淆的点</h2>
+
+<table>
+  <thead>
+    <tr><th>容易混的概念</th><th>区别</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Agent vs ChatGPT</td>
+      <td>ChatGPT 是被动应答；Agent 主动调用工具、循环执行、出错自纠。OpenAI 明确说"集成了 LLM 但不用它控制工作流的简单聊天机器人不是 Agent"。</td>
+    </tr>
+    <tr>
+      <td>Agent vs Workflow</td>
+      <td>Workflow 是"程序员画好路线图，LLM 照着走"；Agent 是"LLM 自己看地图"。前者可控可预测，后者灵活但累积错误概率更高。</td>
+    </tr>
+    <tr>
+      <td>Agent vs Copilot</td>
+      <td>Copilot 强调人机协作、每步由人确认；Agent 强调自主性、只在终点或卡死时打断人。</td>
+    </tr>
+    <tr>
+      <td>Agent vs RAG</td>
+      <td>RAG 是"先检索再回答"的模式，常常作为 Agent 的一个工具出现；Agent 是更大的系统框架。RAG ≠ Agent。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>什么时候不该用 Agent</strong>（来自 Anthropic）：</p>
+<ul>
+  <li>规则能解决的：if-thelse 写得清楚的场景，用 Agent 是过度设计。</li>
+  <li>延迟敏感、成本敏感：Agent 用更高的延迟和 token 换灵活性。</li>
+  <li>单一调用 + 检索 + 示例 已经能搞定的：Anthropic 明确说"很多应用优化单次 LLM 调用就够了"。</li>
+</ul>
+
+<h2>6. 可核查的资料来源</h2>
+
+<div class="source">
+  <strong>[1] Building Effective AI Agents</strong><br>
+  Anthropic Engineering, 2024-12 发布，多次更新<br>
+  <a href="https://www.anthropic.com/engineering/building-effective-agents">https://www.anthropic.com/engineering/building-effective-agents</a><br>
+  <span class="pub">用途：核心定义、Workflow vs Agent 区分、5 种工作流模式、增强型 LLM 概念。✅ 已核查</span>
+</div>
+
+<div class="source">
+  <strong>[2] Building Effective AI Agents: Architecture Patterns and Implementation Frameworks（PDF 白皮书）</strong><br>
+  Anthropic Resources<br>
+  <a href="https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf">https://resources.anthropic.com/hubfs/Building%20Effective%20AI%20Agents-%20Architecture%20Patterns%20and%20Implementation%20Frameworks.pdf</a><br>
+  <span class="pub">用途：Coinbase 99.99% 可用性、Tines 100x time-to-value 的可核查数据。⬜ 待核查 PDF</span>
+</div>
+
+<div class="source">
+  <strong>[3] A practical guide to building agents（PDF）</strong><br>
+  OpenAI Business Guides, 2025-04-17 发布<br>
+  <a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf">https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf</a><br>
+  <span class="pub">用途：OpenAI 对 Agent 的定义、模型/工具/指令三组件、单/多 Agent 编排、Guardrails 设计。⬜ 待核查 PDF</span>
+</div>
+
+<div class="source">
+  <strong>[4] Building agents（OpenAI Developers 学习路径）</strong><br>
+  OpenAI Developers<br>
+  <a href="https://developers.openai.com/tracks/building-agents">https://developers.openai.com/tracks/building-agents</a><br>
+  <span class="pub">用途：与官方指南配套的开发者实操路径，core concepts / tools / orchestration / guardrails 四个模块。⬜ 待核查</span>
+</div>
+
+<h2>7. 自检清单</h2>
+<ul class="checklist">
+  <li>概念界定引用了 ≥2 个来源（Anthropic + OpenAI）</li>
+  <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
+  <li>核心机制里至少有一处说明了"它和别的组件怎么连"（退出条件 / 编排模式）</li>
+  <li>Coinbase 案例是真实存在的（不是凭空编的）</li>
+  <li>边界对照表里至少 1 条能溯源到原始文档（"Workflow vs Agent"来自 Anthropic；"Agent vs ChatGPT"来自 OpenAI）</li>
+  <li>4 条资料来源 URL 都已点开过、确认能打开、内容对得上</li>
+</ul>
+
+<hr>
+
+<p style="font-size:0.88rem; color:var(--ink-soft);">
+  本页由 <code>concept-learner</code> Skill 生成。<br>
+  生成器：AI 草稿；个人理解、应用场景选择、改写记录需要你本人完成。<br>
+  任何标 ⬜ 待核查 的项目，请在提交前手动打开 URL 验证。
+</p>
+
+<footer>concept-learning-skill · learning-materials/agent.html</footer>
+
+</body>
+</html>

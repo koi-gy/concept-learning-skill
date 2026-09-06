@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料：Skill · concept-learner</title>
+<style>
+  :root {
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --warn: #b45309;
+    --warn-soft: #fef3c7;
+    --ok: #166534;
+    --ink: #1f2937;
+    --ink-soft: #4b5563;
+    --line: #e5e7eb;
+    --bg: #fafafa;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: var(--ink); background: #fff; line-height: 1.7; max-width: 880px; margin: 32px auto; padding: 0 24px; }
+  h1 { font-size: 2rem; margin-bottom: 4px; }
+  h2 { font-size: 1.4rem; margin-top: 36px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1rem; margin-top: 24px; color: var(--accent); }
+  .meta { color: var(--ink-soft); font-size: 0.92rem; padding: 12px 16px; background: var(--bg); border-left: 4px solid var(--accent); border-radius: 4px; margin: 16px 0 28px; }
+  .meta span { display: inline-block; margin-right: 18px; }
+  .meta strong { color: var(--ink); }
+  .tldr { background: var(--accent-soft); padding: 16px 20px; border-radius: 8px; }
+  .tldr ul { margin: 8px 0 0; padding-left: 20px; }
+  .tldr li { margin-bottom: 4px; }
+  .personal { background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 16px 20px; border-radius: 4px; }
+  .personal::before { content: "⚠️ 待人工改写"; display: inline-block; font-weight: 600; color: var(--warn); margin-bottom: 8px; font-size: 0.88rem; }
+  .personal p { margin: 8px 0; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  pre { background: #1f2937; color: #e5e7eb; padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: var(--bg); font-weight: 600; }
+  ol, ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 6px 0 6px 28px; position: relative; }
+  .checklist li::before { content: "☐"; position: absolute; left: 4px; color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+  .checklist li.done { color: var(--ink-soft); text-decoration: line-through; }
+  .checklist li.done::before { content: "☑"; color: var(--ok); }
+  .source { font-size: 0.92rem; padding: 10px 14px; background: var(--bg); border-radius: 4px; margin: 10px 0; }
+  .source a { color: var(--accent); word-break: break-all; }
+  .source .pub { color: var(--ink-soft); font-size: 0.85rem; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+  footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<h1>概念学习资料：Skill</h1>
+
+<div class="meta">
+  <span><strong>生成时间</strong> 2026-09-06</span>
+  <span><strong>来源门槛</strong> 官方文档级</span>
+  <span><strong>最后核查</strong> ⬜ 未核查</span>
+  <span><strong>状态</strong> AI 草稿 · 待人工核查与改写</span>
+</div>
+
+<section class="tldr">
+  <strong>TL;DR — 30 秒版</strong>
+  <ul>
+    <li>Skill = 一个文件夹，含 <code>SKILL.md</code>（YAML frontmatter + 说明）+ 可选的脚本/资源。</li>
+    <li>它把"如何完成特定任务"的专家知识<strong>封装成可复用的资源</strong>，让 AI 按需加载。</li>
+    <li>关键设计是<strong>渐进式披露（progressive disclosure）</strong>：默认只加载 name/description，匹配后才加载全文。</li>
+    <li>和 Prompt、MCP、Project 的区别：Skill 是任务级、可组合、按需加载。</li>
+    <li>WorkBuddy 中的项目级 Skill 保存在 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>，可被仓库内任何对话调用。</li>
+  </ul>
+</section>
+
+<h2>1. 这是什么</h2>
+<p>不同来源对 Skill 的定义一致，措辞各有侧重：</p>
+<ul>
+  <li><strong>Anthropic（2025-10-16 发布的 Introducing Agent Skills）</strong>："Skills are folders that include instructions, scripts, and resources that Claude can load when needed." — 强调它是"按需加载"的资源包。</li>
+  <li><strong>Anthropic Help Center</strong>："Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks." — 强调动态加载是为了<strong>提升特定任务的表现</strong>。</li>
+  <li><strong>Anthropic 中文官方文档</strong>：技能是"可复用的、基于文件系统的资源"，给智能体提供特定领域的专业知识（工作流、上下文、最佳实践）。</li>
+</ul>
+<p><strong>没有显著冲突</strong>，三个来源本质一致：Skill 是一个<strong>结构化的、按需加载的能力包</strong>。</p>
+
+<h2>2. 我的理解</h2>
+<div class="personal">
+<p><strong>这一段是 AI 草稿，必须由你用自己的话改写。</strong></p>
+<p>如果让我给同学讲，我会这样说——</p>
+<p>"如果把 LLM 比作一个新来的同事，他很聪明但不了解你公司。你不会每次都从头告诉他'我们公司怎么报销、怎么发周报、怎么写代码注释'。你会把这些写成一份份<strong>入职手册</strong>放在他桌上，他需要的时候自己翻。Skill 就是给 AI 的'入职手册'——一份结构化的文件夹，里面是 SKILL.md（说明这份手册讲什么、什么时候用）+ 可能附一些模板代码。"</p>
+<p>重点是它<strong>不每次都加载</strong>。默认只让 AI 看到手册的标题和简介（name/description），只有当任务"看起来相关"时，AI 才打开看正文。这就是渐进式披露——你装了 100 份手册，但每次对话只读其中一本。</p>
+</div>
+
+<h2>3. 核心机制 / 组成</h2>
+
+<h3>3.1 三层加载模型（Progressive Disclosure）</h3>
+<p>来自 Anthropic Cookbook 的官方说明：</p>
+<ol>
+  <li><strong>元数据层（Metadata）</strong>：<code>name</code>（最多 64 字符）+ <code>description</code>（最多 1024 字符），从 <code>SKILL.md</code> 的 YAML frontmatter 读。AI <strong>始终</strong>看到这一层。</li>
+  <li><strong>完整指令层（Full Instructions）</strong>：SKILL.md 的正文内容，&lt;5k token。AI <strong>判断相关时</strong>才加载。</li>
+  <li><strong>链接文件层（Linked Files）</strong>：SKILL.md 引用的脚本、模板、示例。只有真正用到时才加载。</li>
+</ol>
+<p><strong>它和别的组件怎么连</strong>：这种分层让"装 100 个 Skill"几乎不增加请求成本——大多数 Skill 只贡献 1 行 YAML。Anthropic 的数据：手动塞 8k token 的 Excel 说明 vs Skills 元数据 <strong>节省 98% 初始 token</strong>。</p>
+
+<h3>3.2 SKILL.md 的硬性结构</h3>
+<p>来自 Anthropic 中文官方文档的 <em>Agent Skills 概述</em>：</p>
+<pre>---
+name: your-skill-name
+description: 这个 Skill 做什么、何时使用
+---
+
+# 你的 Skill 名称
+
+## 说明
+[给 AI 的清晰、分步骤指引]
+
+## 示例
+[具体使用示例]
+</pre>
+<p><strong>字段要求</strong>：</p>
+<ul>
+  <li><code>name</code>：最多 64 字符；只能含小写字母、数字、连字符；不能含 XML 标签；不能含 "anthropic" / "claude"。</li>
+  <li><code>description</code>：不能为空；最多 1024 字符；不能含 XML 标签；<strong>必须同时包含 Skill 的功能 + 何时使用</strong>。</li>
+</ul>
+
+<h3>3.3 Skill 类型（按来源分）</h3>
+<table>
+  <thead>
+    <tr><th>类型</th><th>来源</th><th>示例</th><th>谁触发</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Anthropic-managed</td>
+      <td>Anthropic 官方维护</td>
+      <td>xlsx、pptx、pdf、docx</td>
+      <td>AI 自动按需调用</td>
+    </tr>
+    <tr>
+      <td>Custom（用户/团队）</td>
+      <td>用户自己写</td>
+      <td>品牌指南、财务模型、内部流程</td>
+      <td>AI 自动调用（按任务相关度）</td>
+    </tr>
+    <tr>
+      <td>Organization provisioned</td>
+      <td>Team/Enterprise 管理员配置</td>
+      <td>公司标准合规检查流程</td>
+      <td>对所有团队成员自动可用</td>
+    </tr>
+    <tr>
+      <td>Partner skills</td>
+      <td>Notion、Figma、Atlassian 等合作伙伴</td>
+      <td>Notion Skill</td>
+      <td>配合 MCP connector 使用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3.4 安全模型</h3>
+<p>同样来自 Anthropic 中文文档：</p>
+<ul>
+  <li>Skill 通过指令和代码赋予 AI 新能力，因此<strong>恶意 Skill 可能引导 AI 做未声明的操作</strong>。</li>
+  <li>最佳实践：只使用可信来源的 Skill（自己创建的或来自 Anthropic 官方）。</li>
+  <li>审查清单：检查所有捆绑文件（SKILL.md、脚本、图像、资源）；留意异常网络调用、文件访问模式、与声明不符的操作；从外部 URL 获取数据的 Skill 风险更高。</li>
+</ul>
+
+<h2>4. 一个具体应用场景</h2>
+<p><strong>用 Skill 把公司报销流程教给 Claude</strong>（场景来自 Anthropic Help Center 的 Custom skills 例子）：</p>
+<ul>
+  <li><strong>谁在用</strong>：一家中型公司的财务团队。</li>
+  <li><strong>解决什么问题</strong>：员工每周问 Claude "怎么报销餐费"——需要统一答案，避免每次 Claude 重新编。</li>
+  <li><strong>怎么做的</strong>：把公司报销制度写进 <code>expense-claim/SKILL.md</code>，描述：什么场景调用（"用户问报销"）、如何计算金额上限、需要哪些附件。</li>
+  <li><strong>关键效果</strong>：员工问"500 元打车费能报销吗"，Claude 自动加载 Skill、按公司制度回答。</li>
+</ul>
+<p>为什么这个例子可信：直接对应 Anthropic 官方文档列举的 Custom skills 典型场景（"Apply brand style guidelines"、"Generate communications following company email templates"、"Automate personal workflows"）。</p>
+
+<h2>5. 边界 & 容易混淆的点</h2>
+
+<table>
+  <thead>
+    <tr><th>容易混的概念</th><th>区别</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Skill vs Prompt</td>
+      <td>Prompt 是单次对话的输入；Skill 是结构化的、可复用的资源，跨对话生效。</td>
+    </tr>
+    <tr>
+      <td>Skill vs Custom Instructions</td>
+      <td>Custom Instructions 对所有对话生效（"你说话要礼貌"）；Skill 只在任务匹配时加载（"做 Excel 时遵循这个格式"）。</td>
+    </tr>
+    <tr>
+      <td>Skill vs Project</td>
+      <td>Project 是"启动对话时一次性加载的背景知识"；Skill 是"按需加载的专用流程"。</td>
+    </tr>
+    <tr>
+      <td>Skill vs MCP（Model Context Protocol）</td>
+      <td>MCP 让 Claude 连接外部服务和数据；Skill 教 Claude 如何使用这些工具。两者可叠加——MCP 给"能调用什么"，Skill 给"怎么调用"。</td>
+    </tr>
+    <tr>
+      <td>Skill vs Tool</td>
+      <td>Tool 是单次 API 调用（get_weather）；Skill 是封装了多个工具 + 指令的"方法论"。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>常见误区</strong>：</p>
+<ul>
+  <li>"Skill 越多越好"——错。每个 Skill 都对上下文窗口有少量开销（元数据 + description），堆太多反而稀释。</li>
+  <li>"Skill 等于提示词模板"——错。Skill 可以包含可执行代码（当传统编程比 token 生成更可靠时），不只文字。</li>
+  <li>"别人写的 Skill 直接用就行"——错。Skill 给 AI 新的指令 + 执行代码的能力，必须审查来源和内容。</li>
+</ul>
+
+<h2>6. 可核查的资料来源</h2>
+
+<div class="source">
+  <strong>[1] Introducing Agent Skills | Claude</strong><br>
+  Anthropic News, 2025-10-16 发布，2025-12-18 更新<br>
+  <a href="https://www.anthropic.com/news/skills">https://www.anthropic.com/news/skills</a><br>
+  <span class="pub">用途：Skill 的官方定义、Composable/Portable/Efficient 四大特性、Skill 在 Claude apps / Claude Code / API 的统一格式。✅ 已核查（搜索结果命中）</span>
+</div>
+
+<div class="source">
+  <strong>[2] What are skills?（Anthropic Help Center）</strong><br>
+  Anthropic 支持文档<br>
+  <a href="https://support.anthropic.com/en/articles/12512176-what-are-skills">https://support.anthropic.com/en/articles/12512176-what-are-skills</a><br>
+  <span class="pub">用途：渐进式披露原理、4 类 Skill、Custom skills 典型场景、与 Projects/MCP/Custom Instructions 的对比。✅ 已核查（搜索结果命中）</span>
+</div>
+
+<div class="source">
+  <strong>[3] Agent Skills（中文官方文档）</strong><br>
+  Anthropic Console Docs 中文版<br>
+  <a href="https://console.anthropic.com/docs/zh-CN/agents-and-tools/agent-skills/overview">https://console.anthropic.com/docs/zh-CN/agents-and-tools/agent-skills/overview</a><br>
+  <span class="pub">用途：SKILL.md YAML frontmatter 字段硬性要求、安全注意事项、项目级 / 用户级 Skill 的存放位置。✅ 已核查（搜索结果命中）</span>
+</div>
+
+<div class="source">
+  <strong>[4] Introduction to Claude Skills（Cookbook）</strong><br>
+  Anthropic Cookbook, platform.claude.com<br>
+  <a href="https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction">https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction</a><br>
+  <span class="pub">用途：三层加载模型图示、98% token 节省的量化数据、Skills 与代码执行的集成示例。✅ 已核查（搜索结果命中）</span>
+</div>
+
+<div class="source">
+  <strong>[5] Agent Skills 开放标准</strong><br>
+  agentskills.io（Anthropic 发布为开放标准）<br>
+  <a href="https://agentskills.io">https://agentskills.io</a><br>
+  <span class="pub">用途：Skill 格式作为跨平台开放标准的官方页面。⬜ 待核查</span>
+</div>
+
+<h2>7. 自检清单</h2>
+<ul class="checklist">
+  <li>概念界定引用了 ≥2 个来源（Anthropic News + Help Center + 中文文档）</li>
+  <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
+  <li>核心机制里说明了"它和别的组件怎么连"（三层加载如何省 token、Skill 如何配合 MCP）</li>
+  <li>应用场景是真实存在的（Anthropic 官方列举的 Custom skills 场景）</li>
+  <li>边界对照表里至少 1 条能溯源（Skill vs MCP、Skill vs Project 直接来自官方对比表）</li>
+  <li>5 条资料来源 URL 都已点开过、确认能打开、内容对得上</li>
+</ul>
+
+<hr>
+
+<p style="font-size:0.88rem; color:var(--ink-soft);">
+  本页由 <code>concept-learner</code> Skill 生成。<br>
+  本仓库自己的 <code>.workbuddy/skills/concept-learner/SKILL.md</code> 就是 Skill 的具体实例——可对照参考。<br>
+  任何标 ⬜ 待核查 的项目，请在提交前手动打开 URL 验证。
+</p>
+
+<footer>concept-learning-skill · learning-materials/skill.html</footer>
+
+</body>
+</html>
