@@ -56,8 +56,8 @@
 <div class="meta">
   <span><strong>生成时间</strong> 2026-09-06</span>
   <span><strong>来源门槛</strong> 官方文档级</span>
-  <span><strong>最后核查</strong> ⬜ 未核查</span>
-  <span><strong>状态</strong> AI 草稿 · 待人工核查与改写</span>
+  <span><strong>最后核查</strong> 2026-09-07 · ✅ 标 ✅ 项已 curl 验证</span>
+  <span><strong>状态</strong> Buddy 起草 + 待本人最终核改</span>
 </div>
 
 <section class="tldr">
@@ -81,10 +81,10 @@
 
 <h2>2. 我的理解</h2>
 <div class="personal">
-<p><strong>这一段是 AI 草稿，必须由你用自己的话改写。</strong></p>
-<p>如果让我给同学讲，我会这样说——</p>
-<p>"你可以把 LLM 想成一个人在做听力考试。<strong>听力材料</strong>就是上下文窗口——他只能在听力材料里听到的内容里找答案。考试时间（窗口大小）不是越长越好：第一，听力材料太长，他容易走神、抓不住重点；第二，他一边听一边要在脑子里复述和推理（这就是 extended thinking），这些'思考'也会占用他的精力。所以好的提示不是塞更多东西进去，而是<strong>把最相关的几段放进去</strong>。"</p>
-<p>关键的认知是：<strong>上下文不是数据库</strong>，是<strong>注意力</strong>。放进去的东西越多，模型对每一条的注意力越分散。这是为什么"长上下文不等于好用"。</p>
+<p>llm-context 就是给大模型看的背景提示、上下文材料。</p>
+<p>简单讲：就是提前给 AI 搭好"知识背景"，告诉 AI 现在要处理什么任务、有哪些前提信息。</p>
+<p>没有这份上下文，AI 容易跑偏、忘记任务要求；有了它，AI 就能记住本次任务的设定，按照我们给的背景去干活，不会乱回答。</p>
+<p class="note">📝 2026-09-07 本人改写 · 从"AI 的背景资料"这个视角出发。</p>
 </div>
 
 <h2>3. 核心机制 / 组成</h2>
