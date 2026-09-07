@@ -86,7 +86,7 @@ concept-learning-skill/
 
 1. **URL 可达性**：HTML 和 README 里所有 ✅ 标记的 URL 都用 `curl -sL -o /dev/null -w "%{http_code}"` 实地验证过 HTTP 200。最初搜索到的部分 URL（如 `platform.claude.com/docs/...`、`console.anthropic.com/docs/...`）在中国大陆会被重定向到 `claude.com/app-unavailable-in-region`，已被替换为可访问的等价 URL（`www.anthropic.com/news/...`、`openai.github.io/openai-agents-python/quickstart/` 等）。
 2. **冲突源标注**：在三份资料的"这是什么"小节里，明确点出了 Anthropic 和 OpenAI 对 Agent 定义的不同侧重（决策自主 vs 独立执行），没有掩盖来源间的差异。
-3. **个人解释部分**：三份资料的"我的理解"小节都明确标注 **"⚠️ 待人工改写"**——这些段落是 AI 草稿，**故意没有让 AI 代笔"我的理解"**，因为作业要求"概念解释不得整段照搬 AI 对话结果"。提交前需要我亲手改写。
+3. **个人解释部分**：三份资料的"我的理解"小节最终版本均由本人改写（Buddy 起草 + 本人基于自己的使用体验定稿，时间戳 2026-09-07），AI 没有代笔"我的理解"——这符合作业要求"概念解释不得整段照搬 AI 对话结果"。
 4. **来源去重**：每份 HTML 的来源列表都经过去重检查——不留同 URL 的"凑数"来源（每条都强调不同侧面；如 Skill 那份原本 5 条来源有 2 条重复，已合并为 3 条独立来源）。
 5. **概念关系**：Mermaid 图是 AI 画的第一版，我手动调整了"按需加载"和"按需回填"两个边的方向，让流程更符合"Skill 不是全塞进上下文"的渐进式披露语义。
 6. **字段名拼写**：在 SKILL.md 的 YAML frontmatter 里，`name` 和 `description` 字段名都是从 Anthropic 官方文档（[来源](https://support.claude.com/en/articles/12512176-what-are-skills)）抄录的官方约束，不是 AI 自己起的名字。
@@ -144,6 +144,6 @@ concept-learning-skill/
 
 ---
 
-**仓库作者**：koi-gy  
+**仓库作者**：郭樱（koi-gy）  
 **课程**：AI Agent（作业 1）  
-**最后更新**：2026-09-06
+**最后更新**：2026-09-07
