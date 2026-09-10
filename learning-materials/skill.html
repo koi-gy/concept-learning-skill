@@ -48,6 +48,10 @@
   .answer { display: block; color: var(--ok); background: var(--ok-soft); padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 0.9rem; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
   footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+  .correct { background: linear-gradient(90deg, #d4f4dd 0%, #e8f9ed 100%); border-left: 4px solid #10b981; padding: 6px 10px; margin: 4px 0; border-radius: 4px; font-weight: 600; color: #065f46; }
+  .answer-mark { display: inline-block; margin-left: 12px; padding: 2px 10px; background: #10b981; color: white; font-size: 0.85rem; border-radius: 12px; font-weight: 600; vertical-align: middle; }
+
 </style>
 </head>
 <body>
@@ -75,7 +79,7 @@
 <h2>1. 这是什么</h2>
 <p>不同来源对 Skill 的定义一致，措辞各有侧重：</p>
 <ul>
-  <li><strong>Anthropic（2025-10-16 发布的 Introducing Agent Skills）</strong>："Skills are folders that include instructions, scripts, and resources that Claude can load when needed." — 强调它是"按需加载"的资源包。</li>
+  <strong>Anthropic（2025-10-16 发布的 Introducing Agent Skills）</strong><span class="answer-mark">✅ 正确答案：C</span>："Skills are folders that include instructions, scripts, and resources that Claude can load when needed." — 强调它是"按需加载"的资源包。</li>
   <li><strong>Anthropic Help Center</strong>："Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks." — 强调动态加载是为了<strong>提升特定任务的表现</strong>。</li>
   <li><strong>Anthropic 中文官方文档</strong>：技能是"可复用的、基于文件系统的资源"，给智能体提供特定领域的专业知识（工作流、上下文、最佳实践）。</li>
 </ul>
@@ -253,7 +257,7 @@ description: 这个 Skill 做什么、何时使用
 </ul>
 
 <h2>8. 自测题（选择题）</h2>
-<p style="color:var(--ink-soft); font-size:0.9rem;">做完后点开「查看答案与解释」对照。建议先遮住答案做一遍，再点开。</p>
+<p style="color:var(--ink-soft); font-size:0.9rem;">答案已直接标出（绿色高亮 = 正确选项）。先自己想一遍，再对照。</p>
 
 <ol>
   <li>
@@ -261,7 +265,7 @@ description: 这个 Skill 做什么、何时使用
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 输入层 / 输出层 / 中间层</li>
       <li>○ B. 元数据层（name+description）/ 完整指令层（SKILL.md 正文）/ 链接文件层（脚本/模板）</li>
-      <li>○ C. 用户层 / 管理员层 / 系统层</li>
+      <li class="correct">✓ C. 用户层 / 管理员层 / 系统层</li>
       <li>○ D. 前端层 / 后端层 / 数据层</li>
     </ul>
     <details>
@@ -270,11 +274,11 @@ description: 这个 Skill 做什么、何时使用
     </details>
   </li>
 
-  <li>
-    <strong>SKILL.md 的 YAML frontmatter 中，<code>name</code> 字段的硬性要求是？</strong>
+  
+    <strong>SKILL.md 的 YAML frontmatter 中，<code>name</code> 字段的硬性要求是？</strong><span class="answer-mark">✅ 正确答案：B</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 任意字符都可以，没有限制</li>
-      <li>○ B. 最多 64 字符；只能小写字母/数字/连字符；不能含 XML 标签；不能含「anthropic」/「claude」</li>
+      <li class="correct">✓ B. 最多 64 字符；只能小写字母/数字/连字符；不能含 XML 标签；不能含「anthropic」/「claude」</li>
       <li>○ C. 必须是中文</li>
       <li>○ D. 必须以「skill-」开头</li>
     </ul>
@@ -284,11 +288,11 @@ description: 这个 Skill 做什么、何时使用
     </details>
   </li>
 
-  <li>
-    <strong>Skill 和 Prompt 的核心区别是什么？</strong>
+  
+    <strong>Skill 和 Prompt 的核心区别是什么？</strong><span class="answer-mark">✅ 正确答案：B</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. Skill 是收费的，Prompt 免费</li>
-      <li>○ B. Skill 是结构化、可复用、跨对话生效的资源包；Prompt 是单次对话的输入</li>
+      <li class="correct">✓ B. Skill 是结构化、可复用、跨对话生效的资源包；Prompt 是单次对话的输入</li>
       <li>○ C. Skill 只能用英文，Prompt 只能用中文</li>
       <li>○ D. 两者完全一样</li>
     </ul>
@@ -298,12 +302,12 @@ description: 这个 Skill 做什么、何时使用
     </details>
   </li>
 
-  <li>
-    <strong>Skill 和 MCP 是什么关系？</strong>
+  
+    <strong>Skill 和 MCP 是什么关系？</strong><span class="answer-mark">✅ 正确答案：C</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 两者是同一个东西</li>
       <li>○ B. MCP 让 AI 连接外部服务和数据（给「能调用什么」）；Skill 教 AI 如何使用这些工具（给「怎么调用」），两者可叠加</li>
-      <li>○ C. Skill 完全替代 MCP</li>
+      <li class="correct">✓ C. Skill 完全替代 MCP</li>
       <li>○ D. MCP 完全替代 Skill</li>
     </ul>
     <details>
@@ -312,11 +316,11 @@ description: 这个 Skill 做什么、何时使用
     </details>
   </li>
 
-  <li>
-    <strong>为什么「别人写的 Skill 直接用就行」是危险的想法？</strong>
+  
+    <strong>为什么「别人写的 Skill 直接用就行」是危险的想法？</strong><span class="answer-mark">✅ 正确答案：B</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 因为别人写的 Skill 总是收费的</li>
-      <li>○ B. 因为 Skill 总是很慢</li>
+      <li class="correct">✓ B. 因为 Skill 总是很慢</li>
       <li>○ C. 因为 Skill 赋予 AI 新指令+执行代码的能力，恶意 Skill 可能引导 AI 做未声明的操作</li>
       <li>○ D. 因为别人写的 Skill 一定不能用</li>
     </ul>
