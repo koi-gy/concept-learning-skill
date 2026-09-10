@@ -243,28 +243,98 @@ description: 这个 Skill 做什么、何时使用
 
 <h2>7. 自检清单</h2>
 <ul class="checklist">
-  <li>概念界定引用了 ≥2 个来源（Anthropic News + Help Center）</li>
-  <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
-  <li>核心机制里说明了"它和别的组件怎么连"（三层加载如何省 token、Skill 如何配合 MCP）</li>
-  <li>应用场景是真实存在的（Anthropic 官方列举的 Custom skills 场景）</li>
-  <li>边界对照表里至少 1 条能溯源（Skill vs MCP、Skill vs Project 直接来自官方对比表）</li>
-  <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
-  <li>补充：[1] 的两个 URL 是同一页面在不同域名的镜像，互为冗余，已合并为 1 条</li>
+  <li class="done">概念界定引用了 ≥2 个来源（Anthropic News + Help Center）</li>
+  <li class="done">个人解释部分是我自己改写的，不是 AI 原样照搬</li>
+  <li class="done">核心机制里说明了"它和别的组件怎么连"（三层加载如何省 token、Skill 如何配合 MCP）</li>
+  <li class="done">应用场景是真实存在的（Anthropic 官方列举的 Custom skills 场景）</li>
+  <li class="done">边界对照表里至少 1 条能溯源（Skill vs MCP、Skill vs Project 直接来自官方对比表）</li>
+  <li class="done">3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
+  <li class="done">补充：[1] 的两个 URL 是同一页面在不同域名的镜像，互为冗余，已合并为 1 条</li>
 </ul>
 
-<h2>8. 自测题</h2>
+<h2>8. 自测题（选择题）</h2>
+<p style="color:var(--ink-soft); font-size:0.9rem;">做完后点开「查看答案与解释」对照。建议先遮住答案做一遍，再点开。</p>
+
 <ol>
-  <li><strong>Skill 的"渐进式披露（Progressive Disclosure）"三层分别是什么？</strong><br>
-    <span class="answer">💡 元数据层（name + description，AI 始终看到）→ 完整指令层（SKILL.md 正文，匹配时才加载）→ 链接文件层（脚本/模板，真正用到才加载）。</span></li>
-  <li><strong>SKILL.md 的 YAML frontmatter 里 name 和 description 各有什么硬性要求？</strong><br>
-    <span class="answer">💡 name 最多 64 字符、只能小写字母/数字/连字符；description 最多 1024 字符、不能为空，必须同时写清"功能 + 何时使用"。</span></li>
-  <li><strong>Skill 和 Prompt 的核心区别是什么？</strong><br>
-    <span class="answer">💡 Prompt 是单次对话的输入；Skill 是结构化、可复用、跨对话生效的资源包，还能包含可执行代码。</span></li>
-  <li><strong>Skill 和 MCP 是什么关系？</strong><br>
-    <span class="answer">💡 MCP 让 AI 连接外部服务和数据（给"能调用什么"）；Skill 教 AI 如何使用这些工具（给"怎么调用"）。两者可叠加使用。</span></li>
-  <li><strong>为什么"别人写的 Skill 直接用就行"是危险的想法？</strong><br>
-    <span class="answer">💡 Skill 通过指令和代码赋予 AI 新能力，恶意 Skill 可能引导 AI 做未声明的操作。应只使用可信来源，并审查所有捆绑文件、网络调用和文件访问模式。</span></li>
+  <li>
+    <strong>Skill 的「渐进式披露（Progressive Disclosure）」三层分别是？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 输入层 / 输出层 / 中间层</li>
+      <li>○ B. 元数据层（name+description）/ 完整指令层（SKILL.md 正文）/ 链接文件层（脚本/模板）</li>
+      <li>○ C. 用户层 / 管理员层 / 系统层</li>
+      <li>○ D. 前端层 / 后端层 / 数据层</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。来自 Anthropic Cookbook 官方说明：元数据层（始终看到）→ 完整指令层（匹配时加载）→ 链接文件层（用到时加载）。这种分层让「装 100 个 Skill」几乎不增加请求成本——大多数 Skill 只贡献 1 行 YAML。A、C、D 都是「看起来像分层但不是」的混淆项。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>SKILL.md 的 YAML frontmatter 中，<code>name</code> 字段的硬性要求是？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 任意字符都可以，没有限制</li>
+      <li>○ B. 最多 64 字符；只能小写字母/数字/连字符；不能含 XML 标签；不能含「anthropic」/「claude」</li>
+      <li>○ C. 必须是中文</li>
+      <li>○ D. 必须以「skill-」开头</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。来自 Anthropic Help Center 的硬性约束。A 错——有明确字符限制；C 错——只允许 ASCII 字母数字连字符；D 错——没有这个前缀要求。本题考察的是「字面规则」——必须背下来的硬约束。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>Skill 和 Prompt 的核心区别是什么？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. Skill 是收费的，Prompt 免费</li>
+      <li>○ B. Skill 是结构化、可复用、跨对话生效的资源包；Prompt 是单次对话的输入</li>
+      <li>○ C. Skill 只能用英文，Prompt 只能用中文</li>
+      <li>○ D. 两者完全一样</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。Prompt 是单次对话的输入；Skill 是结构化、可复用、跨对话生效的资源包，还能包含可执行代码（当传统编程比 token 生成更可靠时）。A、C、D 都是无关项。Skill 还能按需加载——这是 Prompt 没有的特性。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>Skill 和 MCP 是什么关系？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 两者是同一个东西</li>
+      <li>○ B. MCP 让 AI 连接外部服务和数据（给「能调用什么」）；Skill 教 AI 如何使用这些工具（给「怎么调用」），两者可叠加</li>
+      <li>○ C. Skill 完全替代 MCP</li>
+      <li>○ D. MCP 完全替代 Skill</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。MCP 给「能调用什么」——比如 Notion API、Figma API；Skill 给「怎么调用」——比如「做完 Figma 导出后顺手同步到 Slack」。两者是不同维度，可叠加使用。A 错——它们在不同抽象层；C、D 错——两者不互相替代。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>为什么「别人写的 Skill 直接用就行」是危险的想法？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 因为别人写的 Skill 总是收费的</li>
+      <li>○ B. 因为 Skill 总是很慢</li>
+      <li>○ C. 因为 Skill 赋予 AI 新指令+执行代码的能力，恶意 Skill 可能引导 AI 做未声明的操作</li>
+      <li>○ D. 因为别人写的 Skill 一定不能用</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：C</strong>。Anthropic 明确警告：Skill 通过指令和代码赋予 AI 新能力，恶意 Skill 可能引导 AI 做未声明的操作（如异常网络调用、文件访问模式与声明不符）。最佳实践：只使用可信来源（自己创建或 Anthropic 官方），并审查所有捆绑文件。A、B、D 都不构成实际风险。</p>
+    </details>
+  </li>
 </ol>
+
+<p style="margin-top:24px; padding:12px 16px; background:var(--bg); border-radius:4px; font-size:0.9rem; color:var(--ink-soft);">
+  <strong>自测记录</strong>：完成时间由用户本人填入。
+  建议每份资料 5 题，做完后把答案写在纸上或文档里——<strong>「做出来」比「看完」更扎实</strong>。
+</p>
+
+<hr>
+
+<p class="note">
 
 <hr>
 
