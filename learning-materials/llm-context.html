@@ -28,7 +28,7 @@
   .tldr ul { margin: 8px 0 0; padding-left: 20px; }
   .tldr li { margin-bottom: 4px; }
   .personal { background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 16px 20px; border-radius: 4px; }
-  .personal::before { content: "⚠️ 待人工改写"; display: inline-block; font-weight: 600; color: var(--warn); margin-bottom: 8px; font-size: 0.88rem; }
+  .personal::before { content: "✅ 本人已改写"; display: inline-block; font-weight: 600; color: var(--ok); margin-bottom: 8px; font-size: 0.88rem; }
   .personal p { margin: 8px 0; }
   code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
   pre { background: #1f2937; color: #e5e7eb; padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
@@ -45,6 +45,7 @@
   .source { font-size: 0.92rem; padding: 10px 14px; background: var(--bg); border-radius: 4px; margin: 10px 0; }
   .source a { color: var(--accent); word-break: break-all; }
   .source .pub { color: var(--ink-soft); font-size: 0.85rem; }
+  .answer { display: block; color: var(--ok); background: var(--ok-soft); padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 0.9rem; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
   footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
 </style>
@@ -57,7 +58,7 @@
   <span><strong>生成时间</strong> 2026-09-06</span>
   <span><strong>来源门槛</strong> 官方文档级</span>
   <span><strong>最后核查</strong> 2026-09-07 · ✅ 标 ✅ 项已 curl 验证</span>
-  <span><strong>状态</strong> Buddy 起草 + 待本人最终核改</span>
+  <span><strong>状态</strong> 本人已核改（2026-09-07）</span>
 </div>
 
 <section class="tldr">
@@ -210,6 +211,20 @@
   <li>边界对照表里至少 1 条能溯源（context rot → Anthropic News；RAG 与 context 区别 → 行业共识）</li>
   <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
 </ul>
+
+<h2>8. 自测题</h2>
+<ol>
+  <li><strong>上下文窗口（context window）和训练数据有什么区别？</strong><br>
+    <span class="answer">💡 训练数据是模型"知识"的来源（离线、量级巨大）；上下文窗口是单次请求里能"看到"的工作记忆，包括系统提示、对话历史、工具结果和输出本身。</span></li>
+  <li><strong>什么叫 context rot？</strong><br>
+    <span class="answer">💡 随着 token 数增长，模型对任意单个细节的准确率和召回反而下降——窗口越大不代表每条都找得到。Anthropic 称之为 context rot。</span></li>
+  <li><strong>哪些东西会消耗上下文窗口？</strong><br>
+    <span class="answer">💡 系统提示、messages 里的每条消息（含图片/PDF）、工具定义、模型输出（含 extended thinking 的思考 token）、prompt caching 的 cache 读写。</span></li>
+  <li><strong>长文档场景"查询放最后"能带来什么好处？</strong><br>
+    <span class="answer">💡 长文档放顶部、查询放最后，可让响应质量最多提升约 30%（Anthropic 官方数据）。</span></li>
+  <li><strong>"窗口大就不需要 RAG 了"这个说法为什么错？</strong><br>
+    <span class="answer">💡 窗口大只代表"能装下"，不代表"每条都记得住"；RAG 精准检索通常比"全塞进去"效果更好、成本更低，RAG 是"填满窗口的策略"而非替代品。</span></li>
+</ol>
 
 <hr>
 
