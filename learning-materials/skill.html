@@ -28,7 +28,7 @@
   .tldr ul { margin: 8px 0 0; padding-left: 20px; }
   .tldr li { margin-bottom: 4px; }
   .personal { background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 16px 20px; border-radius: 4px; }
-  .personal::before { content: "⚠️ 待人工改写"; display: inline-block; font-weight: 600; color: var(--warn); margin-bottom: 8px; font-size: 0.88rem; }
+  .personal::before { content: "✅ 本人已改写"; display: inline-block; font-weight: 600; color: var(--ok); margin-bottom: 8px; font-size: 0.88rem; }
   .personal p { margin: 8px 0; }
   code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
   pre { background: #1f2937; color: #e5e7eb; padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
@@ -45,6 +45,7 @@
   .source { font-size: 0.92rem; padding: 10px 14px; background: var(--bg); border-radius: 4px; margin: 10px 0; }
   .source a { color: var(--accent); word-break: break-all; }
   .source .pub { color: var(--ink-soft); font-size: 0.85rem; }
+  .answer { display: block; color: var(--ok); background: var(--ok-soft); padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 0.9rem; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
   footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
 </style>
@@ -57,7 +58,7 @@
   <span><strong>生成时间</strong> 2026-09-06</span>
   <span><strong>来源门槛</strong> 官方文档级</span>
   <span><strong>最后核查</strong> 2026-09-07 · ✅ 标 ✅ 项已 curl 验证</span>
-  <span><strong>状态</strong> Buddy 起草 + 待本人最终核改</span>
+  <span><strong>状态</strong> 本人已核改（2026-09-07）</span>
 </div>
 
 <section class="tldr">
@@ -241,6 +242,20 @@ description: 这个 Skill 做什么、何时使用
   <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
   <li>补充：[1] 的两个 URL 是同一页面在不同域名的镜像，互为冗余，已合并为 1 条</li>
 </ul>
+
+<h2>8. 自测题</h2>
+<ol>
+  <li><strong>Skill 的"渐进式披露（Progressive Disclosure）"三层分别是什么？</strong><br>
+    <span class="answer">💡 元数据层（name + description，AI 始终看到）→ 完整指令层（SKILL.md 正文，匹配时才加载）→ 链接文件层（脚本/模板，真正用到才加载）。</span></li>
+  <li><strong>SKILL.md 的 YAML frontmatter 里 name 和 description 各有什么硬性要求？</strong><br>
+    <span class="answer">💡 name 最多 64 字符、只能小写字母/数字/连字符；description 最多 1024 字符、不能为空，必须同时写清"功能 + 何时使用"。</span></li>
+  <li><strong>Skill 和 Prompt 的核心区别是什么？</strong><br>
+    <span class="answer">💡 Prompt 是单次对话的输入；Skill 是结构化、可复用、跨对话生效的资源包，还能包含可执行代码。</span></li>
+  <li><strong>Skill 和 MCP 是什么关系？</strong><br>
+    <span class="answer">💡 MCP 让 AI 连接外部服务和数据（给"能调用什么"）；Skill 教 AI 如何使用这些工具（给"怎么调用"）。两者可叠加使用。</span></li>
+  <li><strong>为什么"别人写的 Skill 直接用就行"是危险的想法？</strong><br>
+    <span class="answer">💡 Skill 通过指令和代码赋予 AI 新能力，恶意 Skill 可能引导 AI 做未声明的操作。应只使用可信来源，并审查所有捆绑文件、网络调用和文件访问模式。</span></li>
+</ol>
 
 <hr>
 
