@@ -213,27 +213,97 @@
 
 <h2>7. 自检清单</h2>
 <ul class="checklist">
-  <li>概念界定引用了 ≥2 个来源（Anthropic News long context + Anthropic News prompt engineering）</li>
-  <li>个人解释部分是我自己改写的，不是 AI 原样照搬</li>
-  <li>核心机制里说明了"它和别的组件怎么连"（usage 字段、prompt caching 的拆分）</li>
-  <li>应用场景是真实存在的（Anthropic 官方做过量化实验）</li>
-  <li>边界对照表里至少 1 条能溯源（context rot → Anthropic News；RAG 与 context 区别 → 行业共识）</li>
-  <li>3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
+  <li class="done">概念界定引用了 ≥2 个来源（Anthropic News long context + Anthropic News prompt engineering）</li>
+  <li class="done">个人解释部分是我自己改写的，不是 AI 原样照搬</li>
+  <li class="done">核心机制里说明了"它和别的组件怎么连"（usage 字段、prompt caching 的拆分）</li>
+  <li class="done">应用场景是真实存在的（Anthropic 官方做过量化实验）</li>
+  <li class="done">边界对照表里至少 1 条能溯源（context rot → Anthropic News；RAG 与 context 区别 → 行业共识）</li>
+  <li class="done">3 条资料来源 URL 都已点开过、确认能打开、内容对得上（HTTP 200 已 curl 验证）</li>
 </ul>
 
-<h2>8. 自测题</h2>
+<h2>8. 自测题（选择题）</h2>
+<p style="color:var(--ink-soft); font-size:0.9rem;">做完后点开「查看答案与解释」对照。建议先遮住答案做一遍，再点开。</p>
+
 <ol>
-  <li><strong>上下文窗口（context window）和训练数据有什么区别？</strong><br>
-    <span class="answer">💡 训练数据是模型"知识"的来源（离线、量级巨大）；上下文窗口是单次请求里能"看到"的工作记忆，包括系统提示、对话历史、工具结果和输出本身。</span></li>
-  <li><strong>什么叫 context rot？</strong><br>
-    <span class="answer">💡 随着 token 数增长，模型对任意单个细节的准确率和召回反而下降——窗口越大不代表每条都找得到。Anthropic 称之为 context rot。</span></li>
-  <li><strong>哪些东西会消耗上下文窗口？</strong><br>
-    <span class="answer">💡 系统提示、messages 里的每条消息（含图片/PDF）、工具定义、模型输出（含 extended thinking 的思考 token）、prompt caching 的 cache 读写。</span></li>
-  <li><strong>长文档场景"查询放最后"能带来什么好处？</strong><br>
-    <span class="answer">💡 长文档放顶部、查询放最后，可让响应质量最多提升约 30%（Anthropic 官方数据）。</span></li>
-  <li><strong>"窗口大就不需要 RAG 了"这个说法为什么错？</strong><br>
-    <span class="answer">💡 窗口大只代表"能装下"，不代表"每条都记得住"；RAG 精准检索通常比"全塞进去"效果更好、成本更低，RAG 是"填满窗口的策略"而非替代品。</span></li>
+  <li>
+    <strong>上下文窗口（context window）和训练数据有什么区别？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 两者是同一个东西的不同叫法</li>
+      <li>○ B. 训练数据是模型的「知识来源」；上下文窗口是单次请求的「工作记忆」</li>
+      <li>○ C. 训练数据每次请求都会重读；上下文窗口不会</li>
+      <li>○ D. 训练数据收费，上下文窗口免费</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。训练数据是 LLM 学到的「知识」（离线、量级巨大）；上下文窗口是单次请求里能「看到」的内容（系统提示、对话历史、工具结果、输出本身）。A 错——两者本质不同；C 错——训练数据训练完就固定了；D 错——两者都按 token 计费。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>什么叫 context rot？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 上下文被外部攻击污染</li>
+      <li>○ B. 窗口越大，模型对任意单条信息的准确率和召回反而下降</li>
+      <li>○ C. 上下文会因为长期使用而腐烂</li>
+      <li>○ D. 上下文中的中文会逐渐变成乱码</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：B</strong>。Anthropic 在 2024-09 的 long context 提示工程博客里给了一个量化结论：「As token count grows, accuracy and recall degrade」——窗口大只代表「装得下」，不代表「每条都找得到」。A、C、D 都是字面意思的误读。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>下列哪一项<strong>不</strong>会消耗上下文窗口？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 系统提示</li>
+      <li>○ B. 工具定义</li>
+      <li>○ C. 训练数据的引用</li>
+      <li>○ D. 模型输出（含 extended thinking）</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：C</strong>。训练数据是离线语料，不进入单次请求的上下文。Anthropic 官方明确列表：系统提示、messages、工具定义、模型输出（含 extended thinking 的思考 token）、prompt caching 的 cache 读写——都算上下文。A、B、D 都在 Anthropic 官方列表里。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>长文档场景「查询放最后」能带来什么好处？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 让响应质量最多提升约 30%</li>
+      <li>○ B. 让模型更省钱</li>
+      <li>○ C. 让模型输出更长</li>
+      <li>○ D. 避免乱码</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：A</strong>。Anthropic 官方数据：长文档放顶部、查询放最后，响应质量可提升最多 30%。B、C、D 都是无关项。这个技巧的本质是：把「注意力锚点」（用户的真实问题）放在最后，让模型在生成时「记得」它。</p>
+    </details>
+  </li>
+
+  <li>
+    <strong>「窗口大就不需要 RAG 了」这个说法为什么错？</strong>
+    <ul style="list-style:none; padding-left:0; margin:8px 0;">
+      <li>○ A. 因为 RAG 总是更便宜</li>
+      <li>○ B. 因为 RAG 完全替代了上下文窗口</li>
+      <li>○ C. 因为窗口大只代表「装得下」，不代表「每条都记得住」；RAG 精准检索通常更优</li>
+      <li>○ D. 因为 RAG 不支持中文</li>
+    </ul>
+    <details>
+      <summary>查看答案与解释</summary>
+      <p><strong>答案：C</strong>。RAG 是「填满窗口的策略」而不是「替代品」——它的目标是用精准检索把相关片段放进上下文，效果往往比「全塞进去」更好、成本更低。A 错——成本只是副作用；B 错——RAG 也用上下文；D 错——RAG 跟语言无关。</p>
+    </details>
+  </li>
 </ol>
+
+<p style="margin-top:24px; padding:12px 16px; background:var(--bg); border-radius:4px; font-size:0.9rem; color:var(--ink-soft);">
+  <strong>自测记录</strong>：完成时间由用户本人填入。
+  建议每份资料 5 题，做完后把答案写在纸上或文档里——<strong>「做出来」比「看完」更扎实</strong>。
+</p>
+
+<hr>
+
+<p class="note">
 
 <hr>
 
