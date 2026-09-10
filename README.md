@@ -25,7 +25,8 @@ concept-learning-skill/
 │   ├── agent.html                # Agent 概念学习资料
 │   ├── llm-context.html          # 大模型的上下文 概念学习资料
 │   ├── skill.html                # Skill 概念学习资料
-│   └── concept-relationship.md   # 三个概念之间的关系（文字 + Mermaid 图）
+│   ├── concept-relationship.md   # 三个概念之间的关系（Markdown 版）
+│   └── concept-relationship.html # 三个概念之间的关系（HTML 版，浏览器可直接读）
 ├── README.md                     # 本文件
 └── .gitignore                    # 排除敏感文件
 ```
@@ -65,7 +66,7 @@ concept-learning-skill/
 | Agent | [`learning-materials/agent.html`](./learning-materials/agent.html) | Anthropic Engineering、OpenAI Business Guides |
 | 大模型的上下文 | [`learning-materials/llm-context.html`](./learning-materials/llm-context.html) | Anthropic Docs、Anthropic News（long context 提示工程） |
 | Skill | [`learning-materials/skill.html`](./learning-materials/skill.html) | Anthropic News（Introducing Agent Skills）、Anthropic Help Center、中文官方文档、Cookbook |
-| 三者关系 | [`learning-materials/concept-relationship.md`](./learning-materials/concept-relationship.md) | 综合三份资料 + 个人判断 |
+| 三者关系 | [`learning-materials/concept-relationship.md`](./learning-materials/concept-relationship.md) · [`concept-relationship.html`](./learning-materials/concept-relationship.html) | 综合三份资料 + 个人判断 |
 
 每份 HTML 在浏览器中直接打开可读，不依赖外部资源。
 
