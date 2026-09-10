@@ -2,7 +2,7 @@
 
 > 本文配合 [`learning-materials/agent.html`](./learning-materials/agent.html)、[`learning-materials/llm-context.html`](./learning-materials/llm-context.html)、[`learning-materials/skill.html`](./learning-materials/skill.html) 三份资料使用。  
 > 资料来源全部可在对应 HTML 的"可核查的资料来源"小节找到。  
-> 最后更新：2026-09-07
+> 最后更新：2026-09-10
 
 ## 1. 一句话总览
 
