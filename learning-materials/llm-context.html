@@ -80,6 +80,15 @@
 </ul>
 <p><strong>没有显著冲突</strong>，这两个来源互相补充：官方文档给定义和计数规则，提示工程博客给实践技巧。</p>
 
+<h2>0. 学习目标</h2>
+<p>读完这份资料，你应该能用一句话和一段话讲清楚下面 4 件事：</p>
+<ul>
+  <li><strong>讲得清</strong>：用一句话解释「上下文窗口」是 LLM 单次请求的工作记忆容量、不是训练数据。</li>
+  <li><strong>数得全</strong>：能列出至少 5 类会消耗上下文的内容（系统提示、消息、工具定义、输出、extended thinking、prompt caching）。</li>
+  <li><strong>理解 context rot</strong>：能说出「窗口大 ≠ 记得住」是什么、为什么会发生、对长文档问答的影响。</li>
+  <li><strong>会用技巧</strong>：在 20k+ token 长文档场景，能应用「长文档放顶部、查询放最后」「XML 标签结构化」「先引用再回答」三条提示工程技巧。</li>
+</ul>
+
 <h2>2. 我的理解</h2>
 <div class="personal">
 <p>llm-context 就是给大模型看的背景提示、上下文材料。</p>
