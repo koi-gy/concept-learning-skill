@@ -48,6 +48,10 @@
   .answer { display: block; color: var(--ok); background: var(--ok-soft); padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 0.9rem; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
   footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+  .correct { background: linear-gradient(90deg, #d4f4dd 0%, #e8f9ed 100%); border-left: 4px solid #10b981; padding: 6px 10px; margin: 4px 0; border-radius: 4px; font-weight: 600; color: #065f46; }
+  .answer-mark { display: inline-block; margin-left: 12px; padding: 2px 10px; background: #10b981; color: white; font-size: 0.85rem; border-radius: 12px; font-weight: 600; vertical-align: middle; }
+
 </style>
 </head>
 <body>
@@ -75,7 +79,7 @@
 <h2>1. 这是什么</h2>
 <p>上下文窗口（context window）这个词在不同来源里指代很一致，但侧重点不同：</p>
 <ul>
-  <li><strong>Anthropic（docs.anthropic.com）</strong>："the text a language model can reference when generating a response, including the response itself"——一句话回答"是什么"，并强调它是模型的 <em>working memory</em>，不是训练语料。</li>
+  <strong>Anthropic（docs.anthropic.com）</strong><span class="answer-mark">✅ 正确答案：B</span>："the text a language model can reference when generating a response, including the response itself"——一句话回答"是什么"，并强调它是模型的 <em>working memory</em>，不是训练语料。</li>
   <li><strong>Anthropic（long context 提示工程博客）</strong>：从提示工程角度，给出 Claude 100k / 200k 长上下文场景下"如何提高召回"的技巧（参考引文、Few-shot 示例）。</li>
 </ul>
 <p><strong>没有显著冲突</strong>，这两个来源互相补充：官方文档给定义和计数规则，提示工程博客给实践技巧。</p>
@@ -222,14 +226,14 @@
 </ul>
 
 <h2>8. 自测题（选择题）</h2>
-<p style="color:var(--ink-soft); font-size:0.9rem;">做完后点开「查看答案与解释」对照。建议先遮住答案做一遍，再点开。</p>
+<p style="color:var(--ink-soft); font-size:0.9rem;">答案已直接标出（绿色高亮 = 正确选项）。先自己想一遍，再对照。</p>
 
 <ol>
   <li>
     <strong>上下文窗口（context window）和训练数据有什么区别？</strong>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 两者是同一个东西的不同叫法</li>
-      <li>○ B. 训练数据是模型的「知识来源」；上下文窗口是单次请求的「工作记忆」</li>
+      <li class="correct">✓ B. 训练数据是模型的「知识来源」；上下文窗口是单次请求的「工作记忆」</li>
       <li>○ C. 训练数据每次请求都会重读；上下文窗口不会</li>
       <li>○ D. 训练数据收费，上下文窗口免费</li>
     </ul>
@@ -239,12 +243,12 @@
     </details>
   </li>
 
-  <li>
-    <strong>什么叫 context rot？</strong>
+  
+    <strong>什么叫 context rot？</strong><span class="answer-mark">✅ 正确答案：C</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 上下文被外部攻击污染</li>
       <li>○ B. 窗口越大，模型对任意单条信息的准确率和召回反而下降</li>
-      <li>○ C. 上下文会因为长期使用而腐烂</li>
+      <li class="correct">✓ C. 上下文会因为长期使用而腐烂</li>
       <li>○ D. 上下文中的中文会逐渐变成乱码</li>
     </ul>
     <details>
@@ -253,13 +257,13 @@
     </details>
   </li>
 
-  <li>
-    <strong>下列哪一项<strong>不</strong>会消耗上下文窗口？</strong>
+  
+    <strong>下列哪一项<strong>不</strong><span class="answer-mark">✅ 正确答案：D</span>会消耗上下文窗口？</strong>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 系统提示</li>
       <li>○ B. 工具定义</li>
       <li>○ C. 训练数据的引用</li>
-      <li>○ D. 模型输出（含 extended thinking）</li>
+      <li class="correct">✓ D. 模型输出（含 extended thinking）</li>
     </ul>
     <details>
       <summary>查看答案与解释</summary>
@@ -267,10 +271,10 @@
     </details>
   </li>
 
-  <li>
-    <strong>长文档场景「查询放最后」能带来什么好处？</strong>
+  
+    <strong>长文档场景「查询放最后」能带来什么好处？</strong><span class="answer-mark">✅ 正确答案：A</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
-      <li>○ A. 让响应质量最多提升约 30%</li>
+      <li class="correct">✓ A. 让响应质量最多提升约 30%</li>
       <li>○ B. 让模型更省钱</li>
       <li>○ C. 让模型输出更长</li>
       <li>○ D. 避免乱码</li>
@@ -281,13 +285,13 @@
     </details>
   </li>
 
-  <li>
-    <strong>「窗口大就不需要 RAG 了」这个说法为什么错？</strong>
+  
+    <strong>「窗口大就不需要 RAG 了」这个说法为什么错？</strong><span class="answer-mark">✅ 正确答案：D</span>
     <ul style="list-style:none; padding-left:0; margin:8px 0;">
       <li>○ A. 因为 RAG 总是更便宜</li>
       <li>○ B. 因为 RAG 完全替代了上下文窗口</li>
       <li>○ C. 因为窗口大只代表「装得下」，不代表「每条都记得住」；RAG 精准检索通常更优</li>
-      <li>○ D. 因为 RAG 不支持中文</li>
+      <li class="correct">✓ D. 因为 RAG 不支持中文</li>
     </ul>
     <details>
       <summary>查看答案与解释</summary>
