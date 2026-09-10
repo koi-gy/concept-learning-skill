@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三个概念的关系：Agent · 大模型的上下文 · Skill</title>
+<style>
+  :root {
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --ok: #166534;
+    --ok-soft: #dcfce7;
+    --ink: #1f2937;
+    --ink-soft: #4b5563;
+    --line: #e5e7eb;
+    --bg: #fafafa;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: var(--ink); background: #fff; line-height: 1.7; max-width: 880px; margin: 32px auto; padding: 0 24px; }
+  h1 { font-size: 2rem; margin-bottom: 4px; }
+  h2 { font-size: 1.4rem; margin-top: 36px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1rem; margin-top: 24px; color: var(--accent); }
+  .meta { color: var(--ink-soft); font-size: 0.92rem; padding: 12px 16px; background: var(--bg); border-left: 4px solid var(--accent); border-radius: 4px; margin: 16px 0 28px; }
+  .meta span { display: inline-block; margin-right: 18px; }
+  .meta strong { color: var(--ink); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: var(--bg); font-weight: 600; }
+  ol, ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote { border-left: 4px solid var(--accent-soft); margin: 16px 0; padding: 8px 16px; color: var(--ink-soft); background: var(--bg); }
+  pre { background: #1f2937; color: #e5e7eb; padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  .verdict { background: var(--ok-soft); border-left: 4px solid var(--ok); padding: 16px 20px; border-radius: 4px; }
+  .verdict::before { content: "🧭 我的判断"; display: block; font-weight: 700; color: var(--ok); margin-bottom: 8px; }
+  .answer { display: block; color: var(--ok); background: var(--ok-soft); padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 0.9rem; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+  footer { color: var(--ink-soft); font-size: 0.85rem; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<h1>三个概念之间的关系：Agent · 大模型的上下文 · Skill</h1>
+
+<div class="meta">
+  <span><strong>生成时间</strong> 2026-09-06</span>
+  <span><strong>最后核查</strong> 2026-09-07</span>
+  <span><strong>状态</strong> 本人已核改（2026-09-07）</span>
+</div>
+
+<p>本文配合 <code>agent.html</code>、<code>llm-context.html</code>、<code>skill.html</code> 三份资料使用。资料来源全部可在对应 HTML 的「可核查的资料来源」小节找到。</p>
+
+<h2>1. 一句话总览</h2>
+
+<table>
+  <thead>
+    <tr><th>概念</th><th>在 AI 系统中扮演什么</th><th>类比</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>大模型的上下文</strong>（Context Window）</td><td>LLM 单次请求的「工作记忆」，决定 AI 能「看见」多少</td><td>一个人每次开会能听到的总信息量</td></tr>
+    <tr><td><strong>Agent</strong></td><td>让 LLM 自主规划、调用工具、循环执行直到完成任务的系统</td><td>一个被授权自己做决策的「代理人」</td></tr>
+    <tr><td><strong>Skill</strong></td><td>把「如何完成某类任务」打包成按需加载的资源</td><td>一份份放在桌上的「入职手册」</td></tr>
+  </tbody>
+</table>
+
+<p>三者不是并列的——它们是<strong>嵌套关系</strong>：Skill 在需要时被加载到 Context 里，Agent 用 Context 里的 Skill 来完成任务。</p>
+
+<h2>2. 三者的关系（文字描述）</h2>
+
+<h3>2.1 上下文 ⊂ Agent：Agent 的能力边界由上下文决定</h3>
+<p>一个 Agent 能不能完成一个任务，<strong>取决于它的上下文窗口能不能装下完成任务所需的所有东西</strong>：</p>
+<ul>
+  <li>装得下系统提示、用户指令、工具定义、过往对话、文档、工具结果——Agent 才能「看到」一切。</li>
+  <li>装不下——Agent 要么遗忘早期信息，要么需要外部压缩/检索策略。</li>
+  <li>即使装得下，<strong>不是装得多就做得好</strong>——Anthropic 称为 "context rot"：窗口越大，模型对任意单条信息的注意力越分散。</li>
+</ul>
+<blockquote>因此设计 Agent 的人，做的不只是「让 LLM 决定下一步」，更重要的是「往上下文里放什么、按什么顺序放」。</blockquote>
+
+<h3>2.2 Skill → Context：Skill 是「挑出来放进上下文的知识」</h3>
+<p>Skill 的核心设计叫<strong>渐进式披露（Progressive Disclosure）</strong>：</p>
+<ol>
+  <li>默认只让 AI 看到每个 Skill 的 <code>name</code> 和 <code>description</code>（元数据，约 1 行 YAML）。</li>
+  <li>当任务匹配某个 Skill 的描述时，AI 才加载该 Skill 的完整 <code>SKILL.md</code> 正文。</li>
+  <li>真正用到该 Skill 引用的脚本/模板时，才继续加载那些文件。</li>
+</ol>
+<p>效果：装了 100 个 Skill，<strong>单次请求的 token 成本主要取决于「用到了几个」</strong>。这正好绕开了 context window 的限制——Skill 不是「全部塞进上下文」，而是「按需拉取」。</p>
+
+<h3>2.3 Context → Agent：上下文管理是 Agent 工程的核心难题</h3>
+<p>Agent 跟普通 LLM 调用最大的区别是「循环」：一次任务可能要 5–50 轮工具调用，每轮都会：</p>
+<ul>
+  <li>增加新的对话历史</li>
+  <li>引入工具结果（可能是大文档、表格、图片）</li>
+  <li>消耗输出 token（包括 extended thinking）</li>
+</ul>
+<p>每一轮结束，下一轮的 context window 都会增长。Anthropic 的官方建议是：<strong>长文档放顶部，查询放最后</strong>；用 XML 标签结构化；先让模型引用原文再执行任务。这都是为了在有限的 context window 里让 Agent 跑得更稳。</p>
+
+<h2>3. 三者的关系（Mermaid 图）</h2>
+
+<pre><code>flowchart TB
+    User[用户提问/任务] --> AgentLoop{Agent 循环}
+
+    subgraph ContextWindow["上下文窗口 (Context Window)"]
+        SysPrompt[系统提示]
+        History[对话历史]
+        Tools[工具定义]
+        Doc[文档/检索结果]
+        SkillBody[Skill 完整说明&lt;br/&gt;按需加载]
+        Thinking[extended thinking]
+    end
+
+    subgraph SkillsDir["Skills 目录"]
+        Skill1[Skill 1&lt;br/&gt;元数据可见]
+        Skill2[Skill 2&lt;br/&gt;元数据可见]
+        Skill3[Skill 3&lt;br/&gt;未匹配 不加载]
+    end
+
+    SkillsDir -.->|按需| SkillBody
+    ContextWindow --> AgentLoop
+    AgentLoop -->|选择工具| ToolCall[工具调用]
+    ToolCall -->|结果回填| ContextWindow
+    AgentLoop -->|完成/最大轮数| Done[输出结果]</code></pre>
+
+<h2>4. 三者如何一起工作：一个具体例子</h2>
+<p>假设你让 Claude Agent「帮我看看这份财报里 2025 年的净利润」：</p>
+<table>
+  <thead><tr><th>步骤</th><th>涉及的概念</th><th>发生了什么</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Context</td><td>你的提问进入上下文窗口</td></tr>
+    <tr><td>2</td><td>Skill</td><td>AI 在 Skills 目录里扫一遍，发现有个 "financial-report" Skill 描述匹配，加载它的 SKILL.md</td></tr>
+    <tr><td>3</td><td>Skill</td><td>该 Skill 引导 AI：「先定位『净利润』这一行、提取数字、对比去年同期」</td></tr>
+    <tr><td>4</td><td>Context</td><td>财报 PDF 被放进上下文（可能占几万个 token）</td></tr>
+    <tr><td>5</td><td>Context</td><td>按 Anthropic 建议，PDF 放顶部、查询放最后</td></tr>
+    <tr><td>6</td><td>Agent</td><td>AI 决定调用 <code>extract_numbers</code> 工具</td></tr>
+    <tr><td>7</td><td>Context</td><td>工具结果回填到上下文，可能触发 extended thinking</td></tr>
+    <tr><td>8</td><td>Agent</td><td>AI 自我评估「任务完成了吗？」——是，输出答案</td></tr>
+    <tr><td>9</td><td>Context</td><td>整个对话历史保留到上下文窗口里</td></tr>
+  </tbody>
+</table>
+<p>如果这是一个长任务多轮循环，第 2–8 步会重复执行，每次都在消耗 context window；到了窗口快满的时候，Anthropic 推荐做「服务端压缩（server-side compaction）」——把早期对话历史摘要后塞回去，腾出空间。</p>
+
+<h2>5. 对比表：把容易混的地方一次说清</h2>
+
+<table>
+  <thead><tr><th>维度</th><th>上下文 (Context)</th><th>Agent</th><th>Skill</th></tr></thead>
+  <tbody>
+    <tr><td>是什么</td><td>LLM 单次请求的工作记忆容量</td><td>LLM + 工具 + 自主决策循环</td><td>按需加载的结构化任务知识</td></tr>
+    <tr><td>谁在管理</td><td>平台 / API 自动</td><td>开发者 + LLM</td><td>开发者 / 团队</td></tr>
+    <tr><td>主要成本</td><td>输入 token × 单价</td><td>延迟 + 多轮 token + 工具调用开销</td><td>元数据开销极低、匹配后 1×SKILL.md token</td></tr>
+    <tr><td>失效模式</td><td>context rot（信息多反而注意力散）</td><td>累积错误、循环不退出、成本失控</td><td>描述写得不清楚 → AI 不调用 / 调用错</td></tr>
+    <tr><td>优化方向</td><td>摘要、压缩、检索</td><td>简单优先（能用规则就别上 Agent）</td><td>描述要具体 + 给示例 + 边界要写清</td></tr>
+  </tbody>
+</table>
+
+<h2>6. 我的判断（个人理解）</h2>
+<div class="verdict">
+  <p><strong>1. Agent 是当下 AI 应用的主战场</strong>，但 90% 的「Agent 难用」问题其实不是 Agent 本身不行，而是<strong>上下文管理</strong>没做好。</p>
+  <p><strong>2. Skill 是把「上下文管理」规模化的最佳工具</strong>——它让团队/个人能把「做过一次的工作」沉淀下来，下次复用，不用每次重新 prompt。</p>
+  <p><strong>3. 三者关系是「Skill 装知识、Context 限边界、Agent 做决策」</strong>：Skill 提供弹药，Context 决定能装多少弹药，Agent 决定先打哪一发。</p>
+</div>
+
+<p>如果一句话总结：<strong>「用 Skill 把专家知识按需装进 Context，让 Agent 在边界内自主决策。」</strong></p>
+
+<h2>7. 自测题</h2>
+<ol>
+  <li><strong>为什么说三个概念是"嵌套关系"而不是并列关系？</strong><br>
+    <span class="answer">💡 Skill 按需加载进 Context，Agent 用 Context 里的知识做决策——Skill 装知识、Context 限边界、Agent 做决策，层层嵌套。</span></li>
+  <li><strong>Skill 的"渐进式披露"是如何绕开 context window 限制的？</strong><br>
+    <span class="answer">💡 默认只加载每个 Skill 的一行元数据，匹配到任务才加载 SKILL.md 全文，用到才加载脚本——所以装 100 个 Skill 的成本主要取决于"用到了几个"。</span></li>
+  <li><strong>Agent 多轮循环时，上下文会面临什么压力？</strong><br>
+    <span class="answer">💡 每轮都新增对话历史 + 工具结果 + 输出 token，窗口持续增长；快满时需做服务端压缩（把早期历史摘要后塞回）。</span></li>
+  <li><strong>用一句话概括三者的分工？</strong><br>
+    <span class="answer">💡 "用 Skill 把专家知识按需装进 Context，让 Agent 在边界内自主决策。"</span></li>
+</ol>
+
+<hr>
+
+<p style="font-size:0.88rem; color:var(--ink-soft);">
+  本页由 <code>concept-learner</code> Skill 生成。<br>
+  内容由 Buddy 起草；「我的判断」部分为本人改写。<br>
+  配合 <code>agent.html</code>、<code>llm-context.html</code>、<code>skill.html</code> 三份资料阅读。
+</p>
+
+<footer>concept-learning-skill · learning-materials/concept-relationship.html</footer>
+
+</body>
+</html>
